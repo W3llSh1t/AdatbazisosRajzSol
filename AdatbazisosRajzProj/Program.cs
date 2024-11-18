@@ -40,15 +40,28 @@ namespace AdatbazisosRajzProj
     {
         static void Main(string[] args)
         {
-            string[] Files = []; 
-            ApplicationDbContext context = new ApplicationDbContext();
-            context.Draws.Add(new Rajz { Name = "Kör" });
-            context.Points.Append(new Pont { X = 1, Y = 1, Color = ConsoleColor.Red, Symbol = 'O', Rajz = { } });
-            context.Points.Append(new Pont { X = 2, Y = 2, Color = ConsoleColor.Red, Symbol = 'O', Rajz = { } });
+            string[] files = []; 
+            var context = new ApplicationDbContext();
+            string fileName = "Négyzet";
+            var draw = new Rajz { Name = fileName };
+            context.Draws.Add(draw);
+            context.Points.Add(new Pont { X = 2, Y = 2, Color = ConsoleColor.Blue, Symbol = 'X', Rajz = draw });
+            context.Points.Add(new Pont { X = 2, Y = 3, Color = ConsoleColor.Blue, Symbol = 'X', Rajz = draw });
+            var q = draw.Pontok.FirstOrDefault(p => p.X == 2 && p.Y == 3);
+            if (q != null)
+            {
+                q.Symbol = 'O';
+            }
+            else
+            {
+                draw.Pontok.Add(new Pont { X = 2, Y = 3, Color = ConsoleColor.Blue, Symbol = 'O'});
+            }
+            context.SaveChanges();
             foreach (var rajz in context.Draws)
             {
-                Files.Append(rajz.Name);
+                files.Append(rajz.Name);
                 Console.WriteLine(rajz.Name);
+                rajz.Pontok.Add(new Pont { X = 2, Y = 2, Color = ConsoleColor.Blue, Symbol = 'X', Rajz = rajz });
                 foreach (var pont in rajz.Pontok)
                 {
                     Console.WriteLine(pont.X);
